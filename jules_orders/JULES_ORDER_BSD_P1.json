@@ -1,0 +1,199 @@
+{
+    "order_id": "JO-2026-BSD-FALSIFIABILITY-P1",
+    "version": "1.0.0",
+    "created": "2026-03-04T04:35:00-05:00",
+    "protocol": "OUROBOROS v2.0",
+    "system": "Gahenax Core v1.1.1",
+    "_comment": "Phase-1 BSD falsifiability sweep: scan neighborhoods of known high-rank seed curves (rank 0-4) seeking discrepancies between algebraic and analytic rank.",
+    "scientific_objective": {
+        "primary": "Evaluate BSD consistency for ~50,000 elliptic curves across 5 parametric families (rank 0-4). Flag any curve where algebraic rank bounds and analytic rank disagree.",
+        "secondary": "Establish baseline false-positive rate and calibrate L-function precision bounds for Phase-2 deep sweep.",
+        "falsifiable_hypothesis": "There exists E/Q such that ord_{s=1} L(E,s) ≠ rank(E(Q))"
+    },
+    "dataset_spec": {
+        "curve_families": [
+            {
+                "label": "rank0_control",
+                "base_a": -1,
+                "base_b": 0,
+                "seed_rank": 0
+            },
+            {
+                "label": "rank1_37a",
+                "base_a": 0,
+                "base_b": -4,
+                "seed_rank": 1
+            },
+            {
+                "label": "rank2_389a",
+                "base_a": -16,
+                "base_b": -44,
+                "seed_rank": 2
+            },
+            {
+                "label": "rank3_5077a",
+                "base_a": -13392,
+                "base_b": -1080432,
+                "seed_rank": 3
+            },
+            {
+                "label": "rank4_mestre",
+                "base_a": -12987,
+                "base_b": 405702,
+                "seed_rank": 4
+            }
+        ],
+        "neighborhood_radius": 100,
+        "step": 1,
+        "curves_per_family_approx": 40000,
+        "total_curves_approx": 50000,
+        "prime_bound_euler": 5000,
+        "precision_dps": 30,
+        "height_bound_rational": 50
+    },
+    "block_design": {
+        "n_blocks": 10,
+        "strategy": "2 blocks per seed family, even/odd radius split",
+        "blocks": [
+            {
+                "id": 0,
+                "seed": "rank0_control",
+                "radius_start": -100,
+                "radius_end": 0,
+                "probe": "ALPHA"
+            },
+            {
+                "id": 1,
+                "seed": "rank0_control",
+                "radius_start": 0,
+                "radius_end": 100,
+                "probe": "BRAVO"
+            },
+            {
+                "id": 2,
+                "seed": "rank1_37a",
+                "radius_start": -100,
+                "radius_end": 0,
+                "probe": "CHARLIE"
+            },
+            {
+                "id": 3,
+                "seed": "rank1_37a",
+                "radius_start": 0,
+                "radius_end": 100,
+                "probe": "DELTA"
+            },
+            {
+                "id": 4,
+                "seed": "rank2_389a",
+                "radius_start": -100,
+                "radius_end": 0,
+                "probe": "ECHO"
+            },
+            {
+                "id": 5,
+                "seed": "rank2_389a",
+                "radius_start": 0,
+                "radius_end": 100,
+                "probe": "FOXTROT"
+            },
+            {
+                "id": 6,
+                "seed": "rank3_5077a",
+                "radius_start": -100,
+                "radius_end": 0,
+                "probe": "GOLF"
+            },
+            {
+                "id": 7,
+                "seed": "rank3_5077a",
+                "radius_start": 0,
+                "radius_end": 100,
+                "probe": "HOTEL"
+            },
+            {
+                "id": 8,
+                "seed": "rank4_mestre",
+                "radius_start": -100,
+                "radius_end": 0,
+                "probe": "INDIA"
+            },
+            {
+                "id": 9,
+                "seed": "rank4_mestre",
+                "radius_start": 0,
+                "radius_end": 100,
+                "probe": "JULIET"
+            }
+        ]
+    },
+    "block_contract": {
+        "required_outputs_per_block": [
+            "verdicts_block_{id}.jsonl    -- one JSON line per curve evaluated",
+            "manifest_block_{id}.json     -- see manifest_schema",
+            "telemetry_block_{id}.jsonl   -- progress events"
+        ],
+        "manifest_schema": {
+            "block_id": "int",
+            "probe": "string",
+            "seed_label": "string",
+            "n_curves_evaluated": "int",
+            "n_consistent": "int",
+            "n_anomaly": "int",
+            "n_inconclusive": "int",
+            "n_errors": "int",
+            "wall_time_s": "float",
+            "status": "OK | PARTIAL | ERROR"
+        },
+        "verdict_line_schema": {
+            "curve_a": "int",
+            "curve_b": "int",
+            "algebraic_rank_lower": "int",
+            "algebraic_rank_upper": "int or null",
+            "analytic_rank": "int",
+            "L_at_1": "float",
+            "verdict": "CONSISTENT | ANOMALY | INCONCLUSIVE",
+            "confidence": "float"
+        },
+        "telemetry_events": [
+            "BLOCK_START",
+            "PROGRESS_{n}",
+            "ANOMALY_DETECTED",
+            "BLOCK_DONE",
+            "BLOCK_ERROR"
+        ]
+    },
+    "gates": {
+        "gate0_integrity": "All 10 manifests present. Sum of n_curves_evaluated >= 40000.",
+        "gate1_sanity": "Rank-0 control family: >= 95% CONSISTENT verdicts.",
+        "gate2_anomaly_triage": "Any ANOMALY with confidence > 0.5 triggers independent verification protocol.",
+        "gate3_precision_check": "For anomalies: re-evaluate with prime_bound=20000, precision_dps=100. Must reproduce."
+    },
+    "parallel_strategy": {
+        "max_parallel_blocks": 10,
+        "early_gate1": "Run Gate 1 after blocks 0-1 complete (rank-0 control). If >5% anomaly rate in control: ABORT — precision parameters need recalibration.",
+        "failure_policy": "Block failure does not abort other blocks. Log and continue.",
+        "minimum_blocks_for_gate2": 6
+    },
+    "anomaly_verification_protocol": {
+        "step1": "Re-run with prime_bound=20000, precision_dps=100, height_bound=200",
+        "step2": "If anomaly persists, export curve to SageMath format for independent verification",
+        "step3": "If SageMath confirms, flag for Magma cross-verification",
+        "step4": "Only claim BSD violation if 3 independent systems agree",
+        "sage_export_template": "E = EllipticCurve([{a}, {b}]); print(E.rank(), E.lseries().at1())"
+    },
+    "output_dir": "evidence/phase1/",
+    "ledger_dir": "memory/",
+    "falsifiability": {
+        "H0": "BSD holds for all tested curves: rank_alg == rank_an for every E",
+        "H1": "There exists E where rank_alg != rank_an",
+        "archive_condition": "If 0 anomalies after 50K curves: Phase-1 archived as 'BSD consistent in low-conductor families'. Move to Phase-2 (high-conductor, rank >= 5).",
+        "success_condition": "Any anomaly surviving Gate 3 (re-evaluation at high precision) is a candidate counterexample."
+    },
+    "estimated_compute": {
+        "per_curve_avg_seconds": 0.5,
+        "total_wall_time_serial_hours": 7.0,
+        "total_wall_time_10x_parallel_hours": 0.7,
+        "bottleneck": "L-function Euler product for high-discriminant curves (rank 3-4 families)"
+    }
+}
