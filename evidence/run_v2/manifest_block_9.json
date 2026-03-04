@@ -1,0 +1,17 @@
+{
+  "block_id": 9,
+  "probe": "JULIET",
+  "seed_label": "rank4_mestre",
+  "seed_rank": 4,
+  "side": "right",
+  "n_curves_evaluated": 496,
+  "n_consistent": 471,
+  "n_anomaly": 0,
+  "n_inconclusive": 25,
+  "n_errors": 0,
+  "wall_time_s": 486.1,
+  "rate_curves_per_sec": 1.02,
+  "status": "OK",
+  "completed_at": "2026-03-04T12:51:27.502155Z",
+  "node_fingerprint": "81f20188dde1cba93f6e3716e4063ee4b5022778c07ba454fd8ba148c9749fb5"
+}

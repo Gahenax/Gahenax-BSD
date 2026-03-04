@@ -1,1 +1,6 @@
-{"timestamp": "2026-03-04T12:04:13.577431Z", "event": "BLOCK_START", "block_id": 9, "seed": "rank4_mestre", "side": "right"}
+{"timestamp": "2026-03-04T12:43:21.408685Z", "event": "BLOCK_START", "block_id": 9, "probe": "JULIET"}
+{"timestamp": "2026-03-04T12:45:00.370302Z", "event": "PROGRESS_100", "rate": 1.01}
+{"timestamp": "2026-03-04T12:46:37.833937Z", "event": "PROGRESS_200", "rate": 1.02}
+{"timestamp": "2026-03-04T12:48:15.820354Z", "event": "PROGRESS_300", "rate": 1.02}
+{"timestamp": "2026-03-04T12:49:53.775592Z", "event": "PROGRESS_400", "rate": 1.02}
+{"timestamp": "2026-03-04T12:51:27.500628Z", "event": "BLOCK_DONE", "n_evaluated": 496, "wall_time_s": 486.1}

@@ -1,0 +1,15 @@
+{
+  "order_id": "JO-2026-BSD-FALSIFIABILITY-P1",
+  "status": "COMPLETED",
+  "blocks_executed": [
+    7,
+    8,
+    9
+  ],
+  "total_curves_blocks_7_9": 1488,
+  "total_anomalies_blocks_7_9": 0,
+  "grand_total_curves": 4951,
+  "grand_total_anomalies": 0,
+  "node_fingerprint": "474150f0c20606062ea47383f7c1997414fac4d4c5b71b4877fd3d42202f4768",
+  "timestamp": "2026-03-04T12:51:27.505907Z"
+}

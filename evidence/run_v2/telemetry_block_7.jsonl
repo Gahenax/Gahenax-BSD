@@ -1,1 +1,6 @@
-{"timestamp": "2026-03-04T12:00:31.300790Z", "event": "BLOCK_START", "block_id": 7, "seed": "rank3_5077a", "side": "right"}
+{"timestamp": "2026-03-04T12:18:36.787362Z", "event": "BLOCK_START", "block_id": 7, "probe": "HOTEL"}
+{"timestamp": "2026-03-04T12:21:31.438123Z", "event": "PROGRESS_100", "rate": 0.57}
+{"timestamp": "2026-03-04T12:24:27.085394Z", "event": "PROGRESS_200", "rate": 0.57}
+{"timestamp": "2026-03-04T12:27:48.424268Z", "event": "PROGRESS_300", "rate": 0.54}
+{"timestamp": "2026-03-04T12:31:25.514121Z", "event": "PROGRESS_400", "rate": 0.52}
+{"timestamp": "2026-03-04T12:34:49.966740Z", "event": "BLOCK_DONE", "n_evaluated": 496, "wall_time_s": 973.18}
