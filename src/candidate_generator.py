@@ -27,6 +27,13 @@ HIGH_RANK_SEEDS = [
     ("rank3_5077a",     -13392, -1080432, 3),
     # Rank 4 — Mestre family neighborhood
     ("rank4_mestre",    -12987, 405702,  4),
+    # ---- Phase-2 frontier: rank 5-7 ----
+    # Rank 5 — Fermigier family (high conductor, BSD less verified)
+    ("rank5_fermigier", -879984, 319138704, 5),
+    # Rank 6 — Dujella construction
+    ("rank6_dujella",   -3674496, 2706752832, 6),
+    # Rank 7 — Elkies symmetric power family
+    ("rank7_elkies",    -94816050, 368541849450, 7),
 ]
 
 

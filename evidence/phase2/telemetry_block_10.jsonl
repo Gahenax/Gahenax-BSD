@@ -1,0 +1,2 @@
+{"timestamp": "2026-03-04T15:25:55.555256Z", "event": "BLOCK_START", "block_id": 10, "probe": "KILO", "phase": 2, "seed_rank": 5}
+{"timestamp": "2026-03-04T16:09:46.627140Z", "event": "PROGRESS_50", "rate": 0.02, "anomalies": 0}

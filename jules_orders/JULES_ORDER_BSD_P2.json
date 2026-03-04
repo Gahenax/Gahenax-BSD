@@ -1,0 +1,117 @@
+{
+    "order_id": "JO-2026-BSD-FALSIFIABILITY-P2",
+    "version": "1.0.0",
+    "created": "2026-03-04T10:20:00-05:00",
+    "protocol": "OUROBOROS v2.0",
+    "system": "Gahenax Core v1.1.1",
+    "_comment": "Phase-2 BSD deep falsifiability sweep: rank 5-7 frontier families where BSD is least verified. Higher precision than Phase-1. Builds on Phase-1 evidence (4,951 curves, 0 anomalies).",
+    "scientific_objective": {
+        "primary": "Evaluate BSD consistency for high-rank families (rank 5-7) using Fermigier, Dujella, and Elkies seed curves. These are the computational frontier where a counterexample is most likely to exist.",
+        "secondary": "Calibrate L-function precision requirements for rank >= 5. Determine whether prime_bound=10000 is sufficient for reliable analytic rank detection at this scale.",
+        "falsifiable_hypothesis": "There exists E/Q in the rank 5-7 neighborhood such that ord_{s=1} L(E,s) != rank(E(Q))"
+    },
+    "phase1_baseline": {
+        "total_curves": 4951,
+        "total_anomalies": 0,
+        "families_covered": "rank 0-4",
+        "result": "BSD CONSISTENT"
+    },
+    "dataset_spec": {
+        "curve_families": [
+            {
+                "label": "rank5_fermigier",
+                "base_a": -879984,
+                "base_b": 319138704,
+                "seed_rank": 5
+            },
+            {
+                "label": "rank6_dujella",
+                "base_a": -3674496,
+                "base_b": 2706752832,
+                "seed_rank": 6
+            },
+            {
+                "label": "rank7_elkies",
+                "base_a": -94816050,
+                "base_b": 368541849450,
+                "seed_rank": 7
+            }
+        ],
+        "neighborhood_radius": 50,
+        "step": 5,
+        "curves_per_family_approx": 840,
+        "total_curves_approx": 2500,
+        "prime_bound_euler": 10000,
+        "precision_dps": 50,
+        "height_bound_rational": 30
+    },
+    "block_design": {
+        "n_blocks": 6,
+        "strategy": "2 blocks per seed family, left/right split",
+        "blocks": [
+            {
+                "id": 10,
+                "seed": "rank5_fermigier",
+                "side": "left",
+                "probe": "KILO"
+            },
+            {
+                "id": 11,
+                "seed": "rank5_fermigier",
+                "side": "right",
+                "probe": "LIMA"
+            },
+            {
+                "id": 12,
+                "seed": "rank6_dujella",
+                "side": "left",
+                "probe": "MIKE"
+            },
+            {
+                "id": 13,
+                "seed": "rank6_dujella",
+                "side": "right",
+                "probe": "NOVEMBER"
+            },
+            {
+                "id": 14,
+                "seed": "rank7_elkies",
+                "side": "left",
+                "probe": "OSCAR"
+            },
+            {
+                "id": 15,
+                "seed": "rank7_elkies",
+                "side": "right",
+                "probe": "PAPA"
+            }
+        ]
+    },
+    "block_contract": {
+        "required_outputs_per_block": [
+            "verdicts_block_{id}.jsonl",
+            "manifest_block_{id}.json",
+            "telemetry_block_{id}.jsonl"
+        ]
+    },
+    "gates": {
+        "gate0_integrity": "All 6 manifests present, sum of n_curves >= 2000.",
+        "gate1_precision_calibration": "For rank-5 family: if >20% INCONCLUSIVE, precision parameters need recalibration.",
+        "gate2_anomaly_triage": "Any ANOMALY with confidence > 0.5: re-evaluate at prime_bound=50000, dps=100.",
+        "gate3_cross_verification": "Anomalies surviving Gate 2: export to SageMath for 2-Selmer descent."
+    },
+    "parallel_strategy": {
+        "max_parallel_blocks": 6,
+        "failure_policy": "Block failure does not abort others."
+    },
+    "output_dir": "evidence/phase2/",
+    "falsifiability": {
+        "H0": "BSD holds for all tested rank 5-7 curves",
+        "H1": "There exists E in rank 5-7 neighborhood where rank_alg != rank_an",
+        "archive_condition": "If 0 anomalies after Phase-2: archived as 'BSD consistent up to rank 7'. Move to Phase-3 (rank 8+, Elkies 2006 frontier)."
+    },
+    "estimated_compute": {
+        "per_curve_avg_seconds": 5.0,
+        "bottleneck": "Euler product with 10000 primes for curves with large discriminant"
+    }
+}
