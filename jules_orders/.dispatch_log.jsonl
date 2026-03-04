@@ -1,1 +1,6 @@
 {"timestamp": "2026-03-04T16:45:05.770602Z", "order": "BSD_P2_PARALLEL", "session_id": "sessions/6287184695470583838", "status": "DISPATCHED"}
+{"task": "BSD_P3", "family": "rank5_fermigier", "id": "17194689073597449516", "url": "https://jules.google.com/session/17194689073597449516", "status": "DISPATCHED"}
+{"task": "BSD_P3", "family": "rank6_dujella", "id": "1978868707027204903", "url": "https://jules.google.com/session/1978868707027204903", "status": "DISPATCHED"}
+{"task": "BSD_P3", "family": "rank7_elkies", "id": "7787904153506114305", "url": "https://jules.google.com/session/7787904153506114305", "status": "DISPATCHED"}
+{"task": "BSD_P2_RETRY", "family": "rank5_fermigier", "id": "6058785188192542930", "url": "https://jules.google.com/session/6058785188192542930"}
+{"task": "BSD_P2_RETRY", "family": "rank7_elkies", "id": "15160488109273747577", "url": "https://jules.google.com/session/15160488109273747577"}

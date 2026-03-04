@@ -40,11 +40,11 @@ SEEDS_P3 = [
 
 PARAMS = {
     "radius": 100,
-    "step": 3,
+    "step": 10,
     "prime_bound": 5000,
     "precision": 35,
     "height_bound": 30,
-    "n_workers": 16,
+    "n_workers": 4,
     "output_dir": "evidence/phase3",
 }
 
