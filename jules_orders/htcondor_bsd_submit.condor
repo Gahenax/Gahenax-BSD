@@ -1,0 +1,26 @@
+# HTCondor Submit File for LANCIS / Jules Heavy Compute
+# Usage: condor_submit htcondor_bsd_submit.condor
+
+executable     = jules_orders/htcondor_wrapper.sh
+universe       = vanilla
+
+# Logs and outputs separated by Chunk ID
+output         = logs/bsd_rank7_$(Process).out
+error          = logs/bsd_rank7_$(Process).err
+log            = logs/bsd_rank7_$(Process).log
+
+# Pass the Chunk ID to the wrapper
+arguments      = $(Process)
+
+# Request CPUs > 1 to guarantee execution on Katsina (Worker Drones)
+request_cpus   = 4
+request_memory = 8GB
+
+# We want emails only on error
+notification   = Error
+
+# Environment variables setup
+environment    = "PYTHONPATH=/srv/home/gahenax/Gahenax-BSD"
+
+# Queue 100 parallel sweeps (each handling a different slice of the universe)
+queue 100
