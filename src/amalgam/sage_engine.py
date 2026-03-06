@@ -41,7 +41,7 @@ class SageEngineError(Exception):
 def rank_descent(
     a4: int,
     a6: int,
-    algorithm: str = "2descent_complete",
+    algorithm: str = "simon",  # Valid SageMath values: 'simon', 'pari', 'magma', 'sage'
     precomputed_ap: Optional[dict] = None,
     timeout_s: int = 300,
 ) -> dict:
@@ -82,9 +82,11 @@ def _sage_rank(a4: int, a6: int, algorithm: str, precomputed_ap: Optional[dict])
         except Exception:
             L_val = -1.0
 
-        # BSD ratio: L(E,1) / (Omega * Reg * tamagawa)
+        # BSD ratio: sha().an() gives the analytic order of Sha (BSD prediction)
+        # NOTE: E.lseries().L_ratio() exists but is unreliable for high-rank curves.
+        # The documented safe alternative is sha().an() for the BSD ratio check.
         try:
-            bsd_ratio = float(E.lseries().L_ratio())
+            bsd_ratio = float(E.sha().an())
         except Exception:
             bsd_ratio = -1.0
 
