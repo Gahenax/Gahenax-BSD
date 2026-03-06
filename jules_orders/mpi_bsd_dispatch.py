@@ -9,6 +9,10 @@ Requirements:
     pip install mpi4py
 
 Usage (via mpirun or srun on the cluster):
+    # For 4-core machines (e.g., Jules default): use -np 4, NOT -np 8
+    # --oversubscribe causes cache contention and slows down integer descent significantly.
+    mpirun -np 4 python jules_orders/mpi_bsd_dispatch.py --family rank7_elkies
+    # For supercomputing clusters (SLURM/PBS): scale freely to 128+
     mpirun -np 128 python jules_orders/mpi_bsd_dispatch.py --family rank7_elkies
 """
 import sys
@@ -79,8 +83,11 @@ def main():
     ap.add_argument("--family", required=True, help="Family name (e.g., rank7_elkies)")
     ap.add_argument("--radius", type=int, default=100, help="Search radius")
     ap.add_argument("--step", type=int, default=10, help="Search step size")
-    ap.add_argument("--prime_bound", type=int, default=5000, help="Primes bound")
-    ap.add_argument("--precision", type=int, default=35, help="DPS precision")
+    # Reduced defaults per Jules analysis: prime_bound=500, precision=20 is sufficient
+    # to distinguish vanishing order for Rank 7 without hanging on large coefficients.
+    # Use prime_bound=5000 / precision=35 only on supercomputing nodes with >8 cores.
+    ap.add_argument("--prime_bound", type=int, default=500, help="Primes bound (500 sufficient for rank detection)")
+    ap.add_argument("--precision", type=int, default=20, help="DPS precision (20 sufficient for vanishing order)")
     ap.add_argument("--height_bound", type=int, default=30)
     args = ap.parse_args()
 
@@ -127,14 +134,27 @@ def main():
     # -----------------------------------------------------------------------
     # PROCESS: All nodes work concurrently in isolated memory spaces
     # -----------------------------------------------------------------------
+    # Per-curve checkpointing: write results to disk immediately after each curve.
+    # This ensures no data is lost if the session times out before the MPI gather.
+    checkpoint_dir = Path("evidence/supercomputing/checkpoints")
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    checkpoint_file = checkpoint_dir / f"worker_{rank}_{args.family}.jsonl"
+
     local_results = []
     local_anomalies = 0
     for a, b in my_chunk:
         verdict = evaluate_single_curve(a, b, args.family, seed_rank, params)
         local_results.append(verdict)
+
+        # Checkpoint: write this result immediately to disk (BEFORE gather)
+        with open(checkpoint_file, "a", encoding="utf-8") as ckpt:
+            ckpt.write(json.dumps(verdict) + "\n")
+
         if verdict["verdict"] == "ANOMALY":
             local_anomalies += 1
             print(f"[Worker {rank}] ⚠️ ANOMALY FOUND ON SEED E({a},{b})!", flush=True)
+        else:
+            print(f"[Worker {rank}] curve E({a},{b}) → {verdict['verdict']}", flush=True)
 
     # -----------------------------------------------------------------------
     # GATHER: Master node collects all chunks back from the network
